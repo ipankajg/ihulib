@@ -44,10 +44,18 @@ Module Description:
 
 --*/
 
+#if defined(_M_IX86)
+
 #include <windows.h>
 #include <stdio.h>
 #include "ihulib.h"
 
+//
+// Application specific error codes
+//
+#define ERR_INJDLL_ERROR_BASE       0x20001000
+#define ERR_PROCESS_NOT_FOUND       (ERR_INJDLL_ERROR_BASE + 1)
+#define ERR_INVALID_PROCESS_ID      (ERR_INJDLL_ERROR_BASE + 2)
 
 #define MAX_INC_EXC_SIZE            5120
 #define MAX_FN_NAME_LENGTH          64
@@ -138,7 +146,7 @@ ihiUnloadCodeEnd();
 
 Routine Name:
 
-    ihiGetProcessIdByName
+    IhuGetProcessIdByName
 
 Routine Description:
 
@@ -156,7 +164,7 @@ Return:
 --*/
 DWORD
 WINAPI
-ihiGetProcessIdByName(
+IhuGetProcessIdByName(
     LPCWSTR inProcessName)
 {
     DWORD processId = 0;
@@ -209,7 +217,7 @@ funcExit:
 
 Routine Name:
 
-    ihiLaunchNewProcess
+    IhuLaunchNewProcess
 
 Routine Description:
 
@@ -226,7 +234,7 @@ Return:
 --*/
 DWORD
 WINAPI
-ihiLaunchNewProcess(
+IhuLaunchNewProcess(
     LPCWSTR inExePath)
 {
     STARTUPINFO         startupInfo;
@@ -386,7 +394,7 @@ funcExit:
 
 Routine Name:
 
-    ihiInjectDll
+    IhuInjectDll
 
 Routine Description:
 
@@ -404,7 +412,7 @@ Return:
 --*/
 bool
 WINAPI
-ihiInjectDll(
+IhuInjectDll(
     HANDLE          hProcess,
     LPCWSTR inDllPath,
     LPCSTR      inFnIncludes,
@@ -498,7 +506,7 @@ funcExit:
 
 bool
 WINAPI
-ihiUninjectDll(
+IhuUninjectDll(
     HANDLE hProcess,
     LPCWSTR inDllPath)
 /*++
@@ -810,3 +818,5 @@ ihiUnloadCodeEnd(void)
 }
 
 #pragma optimize( "g", on)
+
+#endif // defined(_M_IX86)

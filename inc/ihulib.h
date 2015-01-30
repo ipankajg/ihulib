@@ -494,13 +494,6 @@ private:
     SC_HANDLE   mSCManager;
 };
 
-//
-// Application specific error codes
-//
-#define ERR_INJDLL_ERROR_BASE       0x20001000
-#define ERR_PROCESS_NOT_FOUND       (ERR_INJDLL_ERROR_BASE + 1)
-#define ERR_INVALID_PROCESS_ID      (ERR_INJDLL_ERROR_BASE + 2)
-
 /**
 * @brief   Find the ID of a given process.
 *
@@ -528,7 +521,7 @@ IhuGetProcessIdByName(
 * @param   inExePath - Full path to an exectuable file.
 *
 * @return  If the function succeed, the return value is process Id.
-*          If the function fails, an error is returned.
+*          If the function fails, 0 is returned.
 *
 * @remarks In case of failure, call GetLastError for more information.
 **/
