@@ -142,6 +142,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\debug.cpp" />
+    <ClCompile Include="..\src\injection.cpp" />
     <ClCompile Include="..\src\installdriver.cpp" />
     <ClCompile Include="..\src\miscutil.cpp" />
     <ClCompile Include="..\src\processutil.cpp" />

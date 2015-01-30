@@ -494,6 +494,94 @@ private:
     SC_HANDLE   mSCManager;
 };
 
+//
+// Application specific error codes
+//
+#define ERR_INJDLL_ERROR_BASE       0x20001000
+#define ERR_PROCESS_NOT_FOUND       (ERR_INJDLL_ERROR_BASE + 1)
+#define ERR_INVALID_PROCESS_ID      (ERR_INJDLL_ERROR_BASE + 2)
+
+/**
+* @brief   Find the ID of a given process.
+*
+*          This function takes a snapshot of the running processes
+*          at the time of this call.
+*
+* @param   inProcessName - Name of the process
+*
+* @return  If the function succeed, the return value is process Id.
+*          If the function fails, the return value is ERR_PROCESS_NOT_FOUND.
+*
+* @remarks In case of failure, call GetLastError for more information.
+**/
+DWORD
+WINAPI
+IhuGetProcessIdByName(
+    LPCWSTR inProcessName);
+
+/**
+* @brief   Launches a new process.
+*
+*          This function launches a new process from the given
+*          executable path.
+*
+* @param   inExePath - Full path to an exectuable file.
+*
+* @return  If the function succeed, the return value is process Id.
+*          If the function fails, an error is returned.
+*
+* @remarks In case of failure, call GetLastError for more information.
+**/
+DWORD
+WINAPI
+IhuLaunchNewProcess(
+    LPCWSTR inExePath);
+
+/**
+* @brief   Injects a DLL in a process.
+*
+*          This function injects a DLL as pointed by the path
+*          in a running process, as pointed by the process handle.
+*          Once the DLL is a loaded in the target process,
+*          a hardcoded entry point (IhSerumLoad) is called.
+*
+* @param   hProcess - Handle of the process.
+* @param   inDllPath - Full path of DLL that would be injected in the process.
+* @param   inFnExcludes - Passed to the DLL entry point.
+* @param   inFnExcludes - Passed to the DLL entry point.
+*
+* @return  If the function succeed, true is returned.
+*          If the function fails, false is returned.
+*
+* @remarks In case of failure, call GetLastError for more information.
+**/
+bool
+WINAPI
+IhuInjectDll(
+    HANDLE  hProcess,
+    LPCWSTR inDllPath,
+    LPCSTR  inFnIncludes,
+    LPCSTR  inFnExcludes);
+
+/**
+* @brief   Unloads a DLL in a process.
+*
+*          This function unloads a DLL as pointed by the path
+*          in a running process, as pointed by the process handle.
+*
+* @param   hProcess - Handle of the process.
+* @param   inDllPath - Full path of DLL that would be unloaded from the process.
+*
+* @return  If the function succeed, true is returned.
+*          If the function fails, false is returned.
+*
+* @remarks In case of failure, call GetLastError for more information.
+**/
+bool
+WINAPI
+IhuUninjectDll(
+    HANDLE  hProcess,
+    LPCWSTR inDllPath);
 
 #ifdef __cplusplus
 }
