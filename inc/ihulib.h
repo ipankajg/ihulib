@@ -68,13 +68,6 @@ extern "C"
 //! Macro for turning Unit level logging OFF
 #define IHU_LOGGING_OFF     0
 
-/*
-#define HX_DBG_ENTER                HX_DBG_ENTERW
-#define HX_DBG_LEAVE                HX_DBG_LEAVEW
-#define HX_DBG_FN_ENTER             HX_DBG_FN_ENTERW
-#define HX_DBG_FN_LEAVE             HX_DBG_FN_LEAVEW
-*/
-
 typedef void(__cdecl *PFN_IHU_DBG_LOG)(LPCWSTR fmt, ...);
 
 // Global debug logging function
@@ -83,14 +76,23 @@ extern PFN_IHU_DBG_LOG _IhuDbgLogFn;
 // Global debug logging level
 extern DWORD _IhuDbgLogLevel;
 
-#define IHU_DBG_LOG(unit, level, format)        \
-{                                               \
-    if (level <= _IhuDbgLogLevel &&            \
-        unit == IHU_LOGGING_ON)                 \
-    {                                           \
-        (*_IhuDbgLogFn)(L"[U] - ");               \
-        (*_IhuDbgLogFn) format;                  \
-    }                                           \
+#define IHU_DBG_LOG(unit, level, format)    \
+{                                           \
+    if (level <= _IhuDbgLogLevel &&         \
+        unit == IHU_LOGGING_ON)             \
+    {                                       \
+        (*_IhuDbgLogFn)(L"[U] - ");         \
+        (*_IhuDbgLogFn) format;             \
+    }                                       \
+}
+
+#define IHU_DBG_LOG_EX(unit, level, format, ...)        \
+{                                                       \
+    if (level <= _IhuDbgLogLevel &&                     \
+        unit == IHU_LOGGING_ON)                         \
+    {                                                   \
+        (*_IhuDbgLogFn)(L"[U] - " format, __VA_ARGS__); \
+    }                                                   \
 }
 
 //! Function to configure debug logging attributes
