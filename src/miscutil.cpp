@@ -44,13 +44,10 @@ Module Description:
 #include "ihulib.h"
 
 
-DWORD
-__cdecl
-IhuGetProcessIcon(
-   UINT32   inProcessId,
-   HICON    &ohIcon)
+DWORD __cdecl
+IhuGetProcessIcon(UINT32 inProcessId, HICON & ohIcon)
 {
-    DWORD   valueReturn = 0;
+    DWORD valueReturn = 0;
 
     goto FuncEnd;
 
@@ -59,24 +56,18 @@ FuncEnd:
 }
 
 
-DWORD
-__cdecl
-IhuGetFileIcon(
-    std::wstring    inFilePath,
-    HICON           &ohIcon)
+DWORD __cdecl
+IhuGetFileIcon(std::wstring inFilePath, HICON & ohIcon)
 {
-    DWORD   valueReturn = 0;
+    DWORD valueReturn = 0;
 
     CoInitialize(NULL);
 
     SHFILEINFOW shellFileInfo;
 
-    if (SHGetFileInfoW(
-            inFilePath.c_str(),
-            0,
-            &shellFileInfo,
-            sizeof(shellFileInfo),
-            SHGFI_ICON))
+    if (SHGetFileInfoW
+        (inFilePath.c_str(), 0, &shellFileInfo, sizeof(shellFileInfo),
+         SHGFI_ICON))
     {
         ohIcon = shellFileInfo.hIcon;
     }
@@ -92,4 +83,3 @@ IhuGetFileIcon(
 FuncEnd:
     return valueReturn;
 }
-

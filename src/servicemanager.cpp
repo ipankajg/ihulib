@@ -70,21 +70,17 @@ IHU_SERVICE_MANAGER::~IHU_SERVICE_MANAGER()
 
 
 bool
-IHU_SERVICE_MANAGER::OpenSCManager(
-    DWORD           desiredAccess,
-    LPCWSTR machineName,
-    LPCWSTR databaseName)
+IHU_SERVICE_MANAGER::OpenSCManager(DWORD desiredAccess, LPCWSTR machineName,
+                                   LPCWSTR databaseName)
 {
-    bool bResult    = false;
+    bool bResult = false;
 
-    mSCManager = ::OpenSCManagerW(
-                                machineName,
-                                databaseName,
-                                desiredAccess);
+    mSCManager =::OpenSCManagerW(machineName, databaseName, desiredAccess);
 
     if (!mSCManager)
     {
-        //IHU_DBG_LOGA(IHU_, IHU_LEVEL_ERROR, ("OpenSCManager Failed. GetLastError = 0x%x\n", GetLastError()));
+        // IHU_DBG_LOGA(IHU_, IHU_LEVEL_ERROR, ("OpenSCManager Failed.
+        // GetLastError = 0x%x\n", GetLastError()));
         goto FuncEnd;
     }
 
@@ -97,42 +93,28 @@ FuncEnd:
 
 
 bool
-IHU_SERVICE_MANAGER::CreateService(
-    LPCWSTR serviceName,
-    LPCWSTR displayName,
-    DWORD           desiredAccess,
-    DWORD           serviceType,
-    DWORD           startType,
-    DWORD           errorControl,
-    LPCWSTR binaryPathName,
-    LPCWSTR loadOrderGroup,
-    LPDWORD         tagID,
-    LPCWSTR dependencies,
-    LPCWSTR serviceStartName,
-    LPCWSTR password)
+IHU_SERVICE_MANAGER::CreateService(LPCWSTR serviceName, LPCWSTR displayName,
+                                   DWORD desiredAccess, DWORD serviceType,
+                                   DWORD startType, DWORD errorControl,
+                                   LPCWSTR binaryPathName,
+                                   LPCWSTR loadOrderGroup, LPDWORD tagID,
+                                   LPCWSTR dependencies,
+                                   LPCWSTR serviceStartName, LPCWSTR password)
 {
-    //IHU_DBG_ASSERT(mSCManager && !mService);
+    // IHU_DBG_ASSERT(mSCManager && !mService);
 
-    bool bResult    = false;
+    bool bResult = false;
 
-    mService = ::CreateServiceW(
-                            mSCManager,
-                            serviceName,
-                            displayName,
-                            desiredAccess,
-                            serviceType,
-                            startType,
-                            errorControl,
-                            binaryPathName,
-                            loadOrderGroup,
-                            tagID,
-                            dependencies,
-                            serviceStartName,
-                            password);
+    mService =::CreateServiceW(mSCManager, serviceName, displayName,
+                               desiredAccess, serviceType, startType,
+                               errorControl, binaryPathName, loadOrderGroup,
+                               tagID, dependencies, serviceStartName,
+                               password);
 
     if (!mService)
     {
-        //IHU_DBG_LOGA(IHU_, IHU_LEVEL_ERROR, ("CreateService Failed. GetLastError = 0x%x\n", GetLastError()));
+        // IHU_DBG_LOGA(IHU_, IHU_LEVEL_ERROR, ("CreateService Failed.
+        // GetLastError = 0x%x\n", GetLastError()));
         goto FuncEnd;
     }
 
@@ -145,22 +127,18 @@ FuncEnd:
 
 
 bool
-IHU_SERVICE_MANAGER::OpenService(
-    LPCWSTR serviceName,
-    DWORD           desiredAccess)
+IHU_SERVICE_MANAGER::OpenService(LPCWSTR serviceName, DWORD desiredAccess)
 {
-    //IHU_DBG_ASSERT(mSCManager && !mService);
+    // IHU_DBG_ASSERT(mSCManager && !mService);
 
-    bool bResult    = false;
+    bool bResult = false;
 
-    mService = ::OpenServiceW(
-                            mSCManager,
-                            serviceName,
-                            desiredAccess);
+    mService =::OpenServiceW(mSCManager, serviceName, desiredAccess);
 
     if (!mService)
     {
-        //IHU_DBG_LOGA(IHU_, IHU_LEVEL_ERROR, ("OpenService Failed. GetLastError = 0x%x\n", GetLastError()));
+        // IHU_DBG_LOGA(IHU_, IHU_LEVEL_ERROR, ("OpenService Failed.
+        // GetLastError = 0x%x\n", GetLastError()));
         goto FuncEnd;
     }
 
@@ -175,17 +153,18 @@ FuncEnd:
 bool
 IHU_SERVICE_MANAGER::DeleteService()
 {
-    //IHU_DBG_ASSERT(mSCManager && mService);
+    // IHU_DBG_ASSERT(mSCManager && mService);
 
-    bool bResult    = false;
+    bool bResult = false;
 
     if (!::DeleteService(mService))
     {
-        //IHU_DBG_LOGA(IHU_, IHU_LEVEL_ERROR, ("DeleteService Failed. GetLastError = 0x%x\n", GetLastError()));
+        // IHU_DBG_LOGA(IHU_, IHU_LEVEL_ERROR, ("DeleteService Failed.
+        // GetLastError = 0x%x\n", GetLastError()));
         goto FuncEnd;
     }
 
-    /*
+    /* 
      * We don't care for its return value :)
      */
     CloseService();
@@ -200,18 +179,19 @@ FuncEnd:
 bool
 IHU_SERVICE_MANAGER::CloseService()
 {
-    //IHU_DBG_ASSERT(mSCManager && mService);
+    // IHU_DBG_ASSERT(mSCManager && mService);
 
-    bool bResult    = false;
+    bool bResult = false;
 
     if (!::CloseServiceHandle(mService))
     {
-        //IHU_DBG_LOGA(IHU_, IHU_LEVEL_ERROR, ("CloseService Failed. GetLastError = 0x%x\n", GetLastError()));
+        // IHU_DBG_LOGA(IHU_, IHU_LEVEL_ERROR, ("CloseService Failed.
+        // GetLastError = 0x%x\n", GetLastError()));
         goto FuncEnd;
     }
 
-    mService    = NULL;
-    bResult     = true;
+    mService = NULL;
+    bResult = true;
 
 FuncEnd:
     return bResult;
@@ -222,18 +202,19 @@ FuncEnd:
 bool
 IHU_SERVICE_MANAGER::CloseSCManager()
 {
-    //IHU_DBG_ASSERT(mSCManager);
+    // IHU_DBG_ASSERT(mSCManager);
 
-    bool bResult    = false;
+    bool bResult = false;
 
     if (!::CloseServiceHandle(mSCManager))
     {
-        //IHU_DBG_LOGA(IHU_, IHU_LEVEL_ERROR, ("CloseSCManager Failed. GetLastError = 0x%x\n", GetLastError()));
+        // IHU_DBG_LOGA(IHU_, IHU_LEVEL_ERROR, ("CloseSCManager Failed.
+        // GetLastError = 0x%x\n", GetLastError()));
         goto FuncEnd;
     }
 
-    mSCManager  = NULL;
-    bResult     = true;
+    mSCManager = NULL;
+    bResult = true;
 
 FuncEnd:
     return bResult;
@@ -242,22 +223,21 @@ FuncEnd:
 
 
 bool
-IHU_SERVICE_MANAGER::StartService(
-    DWORD numServiceArgs,
-    LPCWSTR* serviceArgsVector)
+IHU_SERVICE_MANAGER::StartService(DWORD numServiceArgs,
+                                  LPCWSTR * serviceArgsVector)
 {
-    //IHU_DBG_ASSERT(mService);
+    // IHU_DBG_ASSERT(mService);
 
-    bool bResult    = false;
+    bool bResult = false;
 
-    BOOL bTempResult = ::StartServiceW(
-                                    mService,
-                                    numServiceArgs,
-                                    (LPCWSTR *)serviceArgsVector);
+    BOOL bTempResult =::StartServiceW(mService,
+                                      numServiceArgs,
+                                      (LPCWSTR *) serviceArgsVector);
 
     if (!bTempResult)
     {
-        //IHU_DBG_LOGA(IHU_, IHU_LEVEL_ERROR, ("StartService Failed. GetLastError = 0x%x\n", GetLastError()));
+        // IHU_DBG_LOGA(IHU_, IHU_LEVEL_ERROR, ("StartService Failed.
+        // GetLastError = 0x%x\n", GetLastError()));
         goto FuncEnd;
     }
 
@@ -271,12 +251,11 @@ FuncEnd:
 
 
 bool
-IHU_SERVICE_MANAGER::StopService(
-    LPSERVICE_STATUS inServiceStatus)
+IHU_SERVICE_MANAGER::StopService(LPSERVICE_STATUS inServiceStatus)
 {
-    //IHU_DBG_ASSERT(mService);
+    // IHU_DBG_ASSERT(mService);
 
-    bool bResult    = false;
+    bool bResult = false;
     SERVICE_STATUS serviceStatus;
 
     if (inServiceStatus == NULL)
@@ -284,16 +263,16 @@ IHU_SERVICE_MANAGER::StopService(
         inServiceStatus = &serviceStatus;
     }
 
-    BOOL bTempResult = ::ControlService(
-                            mService,
-                            SERVICE_CONTROL_STOP,
-                            inServiceStatus);
+    BOOL bTempResult =::ControlService(mService,
+                                       SERVICE_CONTROL_STOP,
+                                       inServiceStatus);
 
     if (!bTempResult)
     {
         if (GetLastError() != ERROR_SERVICE_NOT_ACTIVE)
         {
-            //IHU_DBG_LOGA(IHU_, IHU_LEVEL_ERROR, ("StartService Failed. GetLastError = 0x%x\n", GetLastError()));
+            // IHU_DBG_LOGA(IHU_, IHU_LEVEL_ERROR, ("StartService Failed.
+            // GetLastError = 0x%x\n", GetLastError()));
             goto FuncEnd;
         }
     }
@@ -303,4 +282,3 @@ IHU_SERVICE_MANAGER::StopService(
 FuncEnd:
     return bResult;
 }
-

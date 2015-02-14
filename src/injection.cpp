@@ -63,84 +63,68 @@ Module Description:
 typedef struct _INJECTION_DATA
 {
     // Required to inject DLL
-    LPVOID          mLoadLibraryW;
-    LPVOID          mGetProcAddr;
-    LPVOID          mFreeLibrary;
-    LPVOID          mGetModuleHandleW;
-    LPVOID          mDeleteFileW;
-    LPVOID          mSleep;
+    LPVOID mLoadLibraryW;
+    LPVOID mGetProcAddr;
+    LPVOID mFreeLibrary;
+    LPVOID mGetModuleHandleW;
+    LPVOID mDeleteFileW;
+    LPVOID mSleep;
 
     // Full path of DLL
-    WCHAR   mDllName[MAX_PATH];
+    WCHAR mDllName[MAX_PATH];
 
     // Injector DLL's initialize function
-    CHAR    mInitFnName[MAX_FN_NAME_LENGTH];
+    CHAR mInitFnName[MAX_FN_NAME_LENGTH];
 
     // Injector DLL's de-initialize function
-    CHAR    mDeInitFnName[MAX_FN_NAME_LENGTH];
+    CHAR mDeInitFnName[MAX_FN_NAME_LENGTH];
 
     // Injector DLL's Thread reference count function
-    CHAR    mThreadUsageFnName[MAX_FN_NAME_LENGTH];
+    CHAR mThreadUsageFnName[MAX_FN_NAME_LENGTH];
 
     // Injector's Init function parameters
-    CHAR    mFnIncludes[MAX_INC_EXC_SIZE];
-    CHAR    mFnExcludes[MAX_INC_EXC_SIZE];
+    CHAR mFnIncludes[MAX_INC_EXC_SIZE];
+    CHAR mFnExcludes[MAX_INC_EXC_SIZE];
 
-}INJECTION_DATA, *PINJECTION_DATA;
+} INJECTION_DATA, *PINJECTION_DATA;
 
 // LoadLibraryW typedef
-typedef HINSTANCE(WINAPI *PFNLOADLIBRARY)(LPCWSTR);
+typedef HINSTANCE(WINAPI * PFNLOADLIBRARY) (LPCWSTR);
 
 // FreeLibrary typedef
-typedef HINSTANCE(WINAPI *PFNFREELIBRARY)(HMODULE);
+typedef HINSTANCE(WINAPI * PFNFREELIBRARY) (HMODULE);
 
 // GetModuleHandle typedef
-typedef HMODULE(WINAPI *PFNGETMODULEHANDLE)(LPCWSTR);
+typedef HMODULE(WINAPI * PFNGETMODULEHANDLE) (LPCWSTR);
 
 // GetProcAddress typedef
-typedef FARPROC(WINAPI *PFNGETPROCADDRESS)(HMODULE,
-    LPCSTR);
+typedef FARPROC(WINAPI * PFNGETPROCADDRESS) (HMODULE, LPCSTR);
 
 // DeleteFileW typedef
-typedef BOOL(WINAPI *PFNDELETEFILE)(LPCWSTR);
+typedef BOOL(WINAPI * PFNDELETEFILE) (LPCWSTR);
 
 // Sleep typedef
-typedef void (WINAPI *PFNSLEEP)(DWORD);
+typedef void (WINAPI * PFNSLEEP) (DWORD);
 
 // DLL's Initiate Patching function prototype
-typedef void (WINAPI *PFNSERUMLOAD)(LPCSTR, LPCSTR);
+typedef void (WINAPI * PFNSERUMLOAD) (LPCSTR, LPCSTR);
 
 // DLL's Deinit patching function typedef
-typedef void (WINAPI *PFNSERUMUNLOAD)(void);
+typedef void (WINAPI * PFNSERUMUNLOAD) (void);
 
 // DLL's thread usage count function typedef
-typedef volatile LONG(WINAPI *PFNSERUMGETREFCOUNT)(void);
+typedef volatile LONG(WINAPI * PFNSERUMGETREFCOUNT) (void);
 
-static
-bool
-ihiInitInjectionData(
-    PINJECTION_DATA injData,
-    LPCWSTR         inDllPath,
-    LPCSTR          inFnIncludes,
-    LPCSTR          inFnExcludes);
+static bool ihiInitInjectionData(PINJECTION_DATA injData, LPCWSTR inDllPath,
+                                 LPCSTR inFnIncludes, LPCSTR inFnExcludes);
 
-static
-void
-ihiInjectedCode(
-LPVOID *inAddress);
+static void ihiInjectedCode(LPVOID * inAddress);
 
-static
-void
-ihiInjectedCodeEnd();
+static void ihiInjectedCodeEnd();
 
-static
-void
-ihiUnloadCode(
-LPVOID *inAddress);
+static void ihiUnloadCode(LPVOID * inAddress);
 
-static
-void
-ihiUnloadCodeEnd();
+static void ihiUnloadCodeEnd();
 
 /*++
 
@@ -162,17 +146,15 @@ Return:
     In case of failure, call GetLastError for more information
 
 --*/
-DWORD
-WINAPI
-IhuGetProcessIdByName(
-    LPCWSTR inProcessName)
+DWORD WINAPI
+IhuGetProcessIdByName(LPCWSTR inProcessName)
 {
     DWORD processId = 0;
     DWORD errorCode = 0;
 
-    IHU_PROCESS_LIST        processList;
-    IHU_PROCESS_LIST_ITER   processListIter;
-    IHU_PROCESS_INFO        processInfo;
+    IHU_PROCESS_LIST processList;
+    IHU_PROCESS_LIST_ITER processListIter;
+    IHU_PROCESS_INFO processInfo;
 
     if (IhuGetProcessList(processList) < 0)
     {
@@ -182,14 +164,12 @@ IhuGetProcessIdByName(
 
     bool processFound = false;
 
-    for (   processListIter = processList.begin();
-            processListIter != processList.end();
-            ++processListIter)
+    for (processListIter = processList.begin();
+         processListIter != processList.end(); ++processListIter)
     {
         processInfo = *processListIter;
 
-        if (_wcsicmp(   processInfo.mProcessName.c_str(),
-                        inProcessName) == 0)
+        if (_wcsicmp(processInfo.mProcessName.c_str(), inProcessName) == 0)
         {
             processFound = true;
             break;
@@ -232,16 +212,14 @@ Return:
     In case of failure, call GetLastError for more information
 
 --*/
-DWORD
-WINAPI
-IhuLaunchNewProcess(
-    LPCWSTR inExePath)
+DWORD WINAPI
+IhuLaunchNewProcess(LPCWSTR inExePath)
 {
-    STARTUPINFO         startupInfo;
+    STARTUPINFO startupInfo;
     PROCESS_INFORMATION procInfo;
 
-    DWORD   processId = 0;
-    DWORD   errorCode = 0;
+    DWORD processId = 0;
+    DWORD errorCode = 0;
 
     ZeroMemory(&startupInfo, sizeof(startupInfo));
     startupInfo.cb = sizeof(startupInfo);
@@ -251,17 +229,17 @@ IhuLaunchNewProcess(
     wchar_t processCommandLine[MAX_PATH];
     wcscpy(processCommandLine, inExePath);
 
-    BOOL bResult = CreateProcess(
-                        NULL,
-                        processCommandLine,
-                        NULL,
-                        NULL,
-                        FALSE,
-                        CREATE_SEPARATE_WOW_VDM | DEBUG_ONLY_THIS_PROCESS,
-                        NULL,
-                        NULL,
-                        &startupInfo,
-                        &procInfo);
+    BOOL bResult = CreateProcess(NULL,
+                                 processCommandLine,
+                                 NULL,
+                                 NULL,
+                                 FALSE,
+                                 CREATE_SEPARATE_WOW_VDM |
+                                 DEBUG_ONLY_THIS_PROCESS,
+                                 NULL,
+                                 NULL,
+                                 &startupInfo,
+                                 &procInfo);
 
     if (!bResult)
     {
@@ -297,17 +275,12 @@ Return:
 
 --*/
 bool
-ihiInitInjectionData(
-    PINJECTION_DATA injData,
-    LPCWSTR inDllPath,
-    LPCSTR      inFnIncludes,
-    LPCSTR      inFnExcludes)
+ihiInitInjectionData(PINJECTION_DATA injData, LPCWSTR inDllPath,
+                     LPCSTR inFnIncludes, LPCSTR inFnExcludes)
 {
     bool funcResult = false;
 
-    memset( injData,
-            0,
-            sizeof(INJECTION_DATA));
+    memset(injData, 0, sizeof(INJECTION_DATA));
 
     HMODULE hModule = GetModuleHandleA("kernel32.dll");
 
@@ -370,13 +343,13 @@ ihiInitInjectionData(
 
     injData->mSleep = sleep;
 
-    strcpy((LPSTR)injData->mInitFnName, "IhSerumLoad");
-    strcpy((LPSTR)injData->mDeInitFnName, "IhSerumUnload");
-    strcpy((LPSTR)injData->mThreadUsageFnName, "IhSerumGetRefCount");
+    strcpy((LPSTR) injData->mInitFnName, "IhSerumLoad");
+    strcpy((LPSTR) injData->mDeInitFnName, "IhSerumUnload");
+    strcpy((LPSTR) injData->mThreadUsageFnName, "IhSerumGetRefCount");
     wcscpy(injData->mDllName, inDllPath);
 
-    strncpy((LPSTR)injData->mFnIncludes, inFnIncludes, MAX_INC_EXC_SIZE - 1);
-    strncpy((LPSTR)injData->mFnExcludes, inFnExcludes, MAX_INC_EXC_SIZE - 1);
+    strncpy((LPSTR) injData->mFnIncludes, inFnIncludes, MAX_INC_EXC_SIZE - 1);
+    strncpy((LPSTR) injData->mFnExcludes, inFnExcludes, MAX_INC_EXC_SIZE - 1);
 
     injData->mFnIncludes[MAX_INC_EXC_SIZE - 1] = 0;
     injData->mFnExcludes[MAX_INC_EXC_SIZE - 1] = 0;
@@ -410,86 +383,64 @@ Return:
     more information.
 
 --*/
-bool
-WINAPI
-IhuInjectDll(
-    HANDLE          hProcess,
-    LPCWSTR inDllPath,
-    LPCSTR      inFnIncludes,
-    LPCSTR      inFnExcludes)
+bool WINAPI
+IhuInjectDll(HANDLE hProcess, LPCWSTR inDllPath, LPCSTR inFnIncludes,
+             LPCSTR inFnExcludes)
 {
-    LPVOID          pInjectionData;
-    LPVOID          pInjectionCode;
-    SIZE_T          notUsed;
-    bool            funcResult = false;
+    LPVOID pInjectionData;
+    LPVOID pInjectionCode;
+    SIZE_T notUsed;
+    bool funcResult = false;
 
 
     INJECTION_DATA injData;
 
-    //
+    // 
     // Allocate the memory inside target process
-    //
-    pInjectionData = VirtualAllocEx(
-                                hProcess,
-                                NULL,
-                                sizeof(injData),
-                                MEM_COMMIT,
-                                PAGE_READWRITE);
+    // 
+    pInjectionData =
+        VirtualAllocEx(hProcess, NULL, sizeof(injData), MEM_COMMIT,
+                       PAGE_READWRITE);
 
     if (pInjectionData == NULL)
     {
         goto funcExit;
     }
 
-    ihiInitInjectionData(
-                    &injData,
-                    inDllPath,
-                    inFnIncludes,
-                    inFnExcludes);
+    ihiInitInjectionData(&injData, inDllPath, inFnIncludes, inFnExcludes);
 
-    WriteProcessMemory(
-                    hProcess,
-                    pInjectionData,
-                    &injData,
-                    sizeof(injData),
-                    &notUsed);
+    WriteProcessMemory(hProcess, pInjectionData, &injData, sizeof(injData),
+                       &notUsed);
 
     ULONG codeSize = 0;
 
-    codeSize = (DWORD_PTR)ihiInjectedCodeEnd - (DWORD_PTR)ihiInjectedCode;
+    codeSize = (DWORD_PTR) ihiInjectedCodeEnd - (DWORD_PTR) ihiInjectedCode;
 
-    //
+    // 
     // Allocate the memory inside target process
-    //
-    pInjectionCode = VirtualAllocEx(
-                                hProcess,
-                                NULL,
-                                codeSize,
-                                MEM_COMMIT,
-                                PAGE_EXECUTE_READWRITE);
+    // 
+    pInjectionCode =
+        VirtualAllocEx(hProcess, NULL, codeSize, MEM_COMMIT,
+                       PAGE_EXECUTE_READWRITE);
 
     if (pInjectionCode == NULL)
     {
         goto funcExit;
     }
 
-    WriteProcessMemory(
-                    hProcess,
-                    pInjectionCode,
-                    ihiInjectedCode,
-                    codeSize,
-                    &notUsed);
+    WriteProcessMemory(hProcess, pInjectionCode, ihiInjectedCode, codeSize,
+                       &notUsed);
 
     DWORD threadId = 0;
 
-    HANDLE hThread = CreateRemoteThread(
-                                hProcess,
-                                0,
-                                0,
-                                (LPTHREAD_START_ROUTINE)pInjectionCode,
-                                pInjectionData,
-                                0,
-                                &threadId);
+    HANDLE hThread = CreateRemoteThread(hProcess,
+                                        0,
+                                        0,
+                                        (LPTHREAD_START_ROUTINE)
+                                        pInjectionCode,
+                                        pInjectionData,
+                                        0,
+                                        &threadId);
 
     if (hThread)
     {
@@ -504,11 +455,8 @@ funcExit:
 
 
 
-bool
-WINAPI
-IhuUninjectDll(
-    HANDLE hProcess,
-    LPCWSTR inDllPath)
+bool WINAPI
+IhuUninjectDll(HANDLE hProcess, LPCWSTR inDllPath)
 /*++
 
 Routine Description:
@@ -522,77 +470,59 @@ Arguments:
 
 --*/
 {
-    LPVOID          pInjectionData;
-    LPVOID          pInjectionCode;
-    SIZE_T          notUsed;
-    bool            funcResult = false;
+    LPVOID pInjectionData;
+    LPVOID pInjectionCode;
+    SIZE_T notUsed;
+    bool funcResult = false;
 
     INJECTION_DATA injData;
 
-    //
+    // 
     // Allocate the memory inside target process
-    //
-    pInjectionData = VirtualAllocEx(
-                                hProcess,
-                                NULL,
-                                sizeof(injData),
-                                MEM_COMMIT,
-                                PAGE_READWRITE);
+    // 
+    pInjectionData =
+        VirtualAllocEx(hProcess, NULL, sizeof(injData), MEM_COMMIT,
+                       PAGE_READWRITE);
 
     if (pInjectionData == NULL)
     {
         goto funcExit;
     }
 
-    ihiInitInjectionData(
-                    &injData,
-                    inDllPath,
-                    "",
-                    "");
+    ihiInitInjectionData(&injData, inDllPath, "", "");
 
-    WriteProcessMemory(
-                    hProcess,
-                    pInjectionData,
-                    &injData,
-                    sizeof(injData),
-                    &notUsed);
+    WriteProcessMemory(hProcess, pInjectionData, &injData, sizeof(injData),
+                       &notUsed);
 
     ULONG codeSize = 0;
 
-    codeSize = (DWORD_PTR)ihiUnloadCodeEnd - (DWORD_PTR)ihiUnloadCode;
+    codeSize = (DWORD_PTR) ihiUnloadCodeEnd - (DWORD_PTR) ihiUnloadCode;
 
-    //
+    // 
     // Allocate the memory inside target process
-    //
-    pInjectionCode = VirtualAllocEx(
-                                hProcess,
-                                NULL,
-                                codeSize,
-                                MEM_COMMIT,
-                                PAGE_EXECUTE_READWRITE);
+    // 
+    pInjectionCode =
+        VirtualAllocEx(hProcess, NULL, codeSize, MEM_COMMIT,
+                       PAGE_EXECUTE_READWRITE);
 
     if (pInjectionCode == NULL)
     {
         goto funcExit;
     }
 
-    WriteProcessMemory(
-                    hProcess,
-                    pInjectionCode,
-                    ihiUnloadCode,
-                    codeSize,
-                    &notUsed);
+    WriteProcessMemory(hProcess, pInjectionCode, ihiUnloadCode, codeSize,
+                       &notUsed);
 
     DWORD threadId = 0;
 
-    HANDLE hThread = CreateRemoteThread(
-                                hProcess,
-                                0,
-                                0,
-                                (LPTHREAD_START_ROUTINE)pInjectionCode,
-                                pInjectionData,
-                                0,
-                                &threadId);
+    HANDLE hThread = CreateRemoteThread(hProcess,
+                                        0,
+                                        0,
+                                        (LPTHREAD_START_ROUTINE)
+                                        pInjectionCode,
+                                        pInjectionData,
+                                        0,
+                                        &threadId);
 
     if (hThread)
     {
@@ -632,10 +562,8 @@ Return:
     none
 
 --*/
-static
-void
-ihiInjectedCode(
-    LPVOID *inAddress)
+static void
+ihiInjectedCode(LPVOID * inAddress)
 {
     HMODULE hMod;
 
@@ -646,7 +574,7 @@ debug:
     _asm je debug;
     _asm pop eax;
 
-    //
+    // 
     // This function cannot make direct function calls
     // because it is injected in target process by calling
     // WriteProcessMemory and if we use any direct function
@@ -654,25 +582,27 @@ debug:
     // Hence, we use function pointers only. This is *ONLY*
     // safe because kernel32.dll is loaded at same address
     // in all the modules
-    //
+    // 
 
-    INJECTION_DATA *injData = (INJECTION_DATA *)inAddress;
-    PFNLOADLIBRARY pfnLoadLibrary = (PFNLOADLIBRARY)injData->mLoadLibraryW;
+    INJECTION_DATA *injData = (INJECTION_DATA *) inAddress;
+    PFNLOADLIBRARY pfnLoadLibrary = (PFNLOADLIBRARY) injData->mLoadLibraryW;
 
-    hMod = pfnLoadLibrary(
-                    injData->mDllName);
+    hMod = pfnLoadLibrary(injData->mDllName);
 
     if (hMod)
     {
-        PFNGETPROCADDRESS pfnGetProcAddress = (PFNGETPROCADDRESS)injData->mGetProcAddr;
+        PFNGETPROCADDRESS pfnGetProcAddress =
+            (PFNGETPROCADDRESS) injData->mGetProcAddr;
 
         // Get the DLL's actual init function
         PFNSERUMLOAD pfnSerumLoad =
-            (PFNSERUMLOAD)pfnGetProcAddress(hMod, (LPCSTR)injData->mInitFnName);
+            (PFNSERUMLOAD) pfnGetProcAddress(hMod,
+                                             (LPCSTR) injData->mInitFnName);
 
         if (pfnSerumLoad != NULL)
         {
-            pfnSerumLoad((LPCSTR)injData->mFnIncludes, (LPCSTR)injData->mFnExcludes);
+            pfnSerumLoad((LPCSTR) injData->mFnIncludes,
+                         (LPCSTR) injData->mFnExcludes);
         }
     }
 }
@@ -690,8 +620,7 @@ Routine Description:
     ihiInjectedCode function's size calculation
 
 --*/
-static
-void
+static void
 ihiInjectedCodeEnd()
 {
     bool unused;
@@ -717,10 +646,8 @@ Return:
     none
 
 --*/
-static
-void
-ihiUnloadCode(
-    LPVOID *inAddress)
+static void
+ihiUnloadCode(LPVOID * inAddress)
 {
     HMODULE hMod;
 
@@ -731,7 +658,7 @@ debug:
     _asm je debug;
     _asm pop eax;
 
-    //
+    // 
     // This function cannot make direct function calls
     // because it is injected in target process by calling
     // WriteProcessMemory and if we use any direct function
@@ -739,28 +666,33 @@ debug:
     // Hence, we use function pointers only. This is *ONLY*
     // safe because kernel32.dll is loaded at same address
     // in all the modules
-    //
-    INJECTION_DATA *injData = (INJECTION_DATA *)inAddress;
+    // 
+    INJECTION_DATA *injData = (INJECTION_DATA *) inAddress;
 
     PFNGETMODULEHANDLE pfnGetModuleHandle =
-                            (PFNGETMODULEHANDLE)injData->mGetModuleHandleW;
+        (PFNGETMODULEHANDLE) injData->mGetModuleHandleW;
 
-    hMod = pfnGetModuleHandle(
-                    injData->mDllName);
+    hMod = pfnGetModuleHandle(injData->mDllName);
 
     if (hMod)
     {
-        PFNGETPROCADDRESS pfnGetProcAddress = (PFNGETPROCADDRESS)injData->mGetProcAddr;
+        PFNGETPROCADDRESS pfnGetProcAddress =
+            (PFNGETPROCADDRESS) injData->mGetProcAddr;
 
-        PFNFREELIBRARY pfnFreeLibrary = (PFNFREELIBRARY)injData->mFreeLibrary;
+        PFNFREELIBRARY pfnFreeLibrary =
+            (PFNFREELIBRARY) injData->mFreeLibrary;
 
-        PFNSLEEP pfnSleep = (PFNSLEEP)injData->mSleep;
+        PFNSLEEP pfnSleep = (PFNSLEEP) injData->mSleep;
 
         PFNSERUMUNLOAD pfnSerumUnload =
-            (PFNSERUMUNLOAD)pfnGetProcAddress(hMod, (LPCSTR)injData->mDeInitFnName);
+            (PFNSERUMUNLOAD) pfnGetProcAddress(hMod,
+                                               (LPCSTR) injData->
+                                               mDeInitFnName);
 
         PFNSERUMGETREFCOUNT pfnSerumGetRefCount =
-            (PFNSERUMGETREFCOUNT)pfnGetProcAddress(hMod, (LPCSTR)injData->mThreadUsageFnName);
+            (PFNSERUMGETREFCOUNT) pfnGetProcAddress(hMod,
+                                                    (LPCSTR) injData->
+                                                    mThreadUsageFnName);
 
         if (pfnSerumUnload != NULL)
         {
@@ -789,7 +721,7 @@ debug:
         // Issue error here and bail out
     }
 
-    PFNDELETEFILE deleteFile = (PFNDELETEFILE)injData->mDeleteFileW;
+    PFNDELETEFILE deleteFile = (PFNDELETEFILE) injData->mDeleteFileW;
     if (!deleteFile(injData->mDllName))
     {
         // Issue error here and bail out
@@ -809,8 +741,7 @@ Routine Description:
     ihiUnloadCode function's size calculation
 
 --*/
-static
-void
+static void
 ihiUnloadCodeEnd(void)
 {
     bool unused;

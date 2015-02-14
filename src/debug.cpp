@@ -81,13 +81,12 @@ Return Value:
 None
 
 --*/
-void
-__cdecl
+void __cdecl
 IhuDbgLog(LPCWSTR sFormat, ...)
 {
-    const size_t    K_SIZE = 512;
-    wchar_t         szMsg[K_SIZE];
-    va_list         argList;
+    const size_t K_SIZE = 512;
+    wchar_t szMsg[K_SIZE];
+    va_list argList;
 
     va_start(argList, sFormat);
 

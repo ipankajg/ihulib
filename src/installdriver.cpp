@@ -48,11 +48,8 @@ Module Description
 #include <string.h>
 #include "ihulib.h"
 
-BOOL
-__cdecl
-IhuInstallDriver(
-    IN LPCWSTR    DriverName,
-    IN LPCWSTR    ServiceExe)
+BOOL __cdecl
+IhuInstallDriver(IN LPCWSTR DriverName, IN LPCWSTR ServiceExe)
 {
     IHU_SERVICE_MANAGER serviceManager;
 
@@ -62,22 +59,22 @@ IhuInstallDriver(
 
     if (bResult == FALSE)
     {
-        //IHU_DBG_LOGW(IHU_, IHU_LEVEL_ERROR, (L"OpenSCManagerW failed. GetLastError = 0x%x\n", GetLastError()));
+        // IHU_DBG_LOGW(IHU_, IHU_LEVEL_ERROR, (L"OpenSCManagerW failed.
+        // GetLastError = 0x%x\n", GetLastError()));
         goto FuncEnd;
     }
 
-    bResult = serviceManager.CreateService(
-                                        DriverName,
-                                        DriverName,
-                                        SERVICE_ALL_ACCESS,
-                                        SERVICE_KERNEL_DRIVER,
-                                        SERVICE_DEMAND_START,
-                                        SERVICE_ERROR_NORMAL,
-                                        ServiceExe);
+    bResult =
+        serviceManager.CreateService(DriverName, DriverName,
+                                     SERVICE_ALL_ACCESS,
+                                     SERVICE_KERNEL_DRIVER,
+                                     SERVICE_DEMAND_START,
+                                     SERVICE_ERROR_NORMAL, ServiceExe);
 
     if (bResult == FALSE)
     {
-        //IHU_DBG_LOGW(IHU_, IHU_LEVEL_ERROR, (L"CreateService failed. GetLastError = 0x%x\n", GetLastError()));
+        // IHU_DBG_LOGW(IHU_, IHU_LEVEL_ERROR, (L"CreateService failed.
+        // GetLastError = 0x%x\n", GetLastError()));
         goto FuncEnd;
     }
 
@@ -88,10 +85,8 @@ FuncEnd:
 }
 
 
-BOOL
-__cdecl
-IhuRemoveDriver(
-    IN LPCWSTR DriverName)
+BOOL __cdecl
+IhuRemoveDriver(IN LPCWSTR DriverName)
 {
     IHU_SERVICE_MANAGER serviceManager;
 
@@ -101,17 +96,17 @@ IhuRemoveDriver(
 
     if (bResult == FALSE)
     {
-        //IHU_DBG_LOGW(IHU_, IHU_LEVEL_ERROR, (L"OpenSCManagerW failed. GetLastError = 0x%x\n", GetLastError()));
+        // IHU_DBG_LOGW(IHU_, IHU_LEVEL_ERROR, (L"OpenSCManagerW failed.
+        // GetLastError = 0x%x\n", GetLastError()));
         goto FuncEnd;
     }
 
-    bResult = serviceManager.OpenService(
-                                    DriverName,
-                                    SERVICE_ALL_ACCESS);
+    bResult = serviceManager.OpenService(DriverName, SERVICE_ALL_ACCESS);
 
     if (bResult == FALSE)
     {
-        //IHU_DBG_LOGW(IHU_, IHU_LEVEL_ERROR, (L"OpenService failed. GetLastError = 0x%x\n", GetLastError()));
+        // IHU_DBG_LOGW(IHU_, IHU_LEVEL_ERROR, (L"OpenService failed.
+        // GetLastError = 0x%x\n", GetLastError()));
         goto FuncEnd;
     }
 
@@ -119,7 +114,8 @@ IhuRemoveDriver(
 
     if (bResult == FALSE)
     {
-        //IHU_DBG_LOGW(IHU_, IHU_LEVEL_ERROR, (L"DeleteService failed. GetLastError = 0x%x\n", GetLastError()));
+        // IHU_DBG_LOGW(IHU_, IHU_LEVEL_ERROR, (L"DeleteService failed.
+        // GetLastError = 0x%x\n", GetLastError()));
         goto FuncEnd;
     }
 
@@ -130,10 +126,8 @@ FuncEnd:
 }
 
 
-BOOL
-__cdecl
-IhuStartDriver(
-    IN LPCWSTR DriverName)
+BOOL __cdecl
+IhuStartDriver(IN LPCWSTR DriverName)
 {
     IHU_SERVICE_MANAGER serviceManager;
 
@@ -143,17 +137,17 @@ IhuStartDriver(
 
     if (bResult == FALSE)
     {
-        //IHU_DBG_LOGW(IHU_, IHU_LEVEL_ERROR, (L"OpenSCManagerW failed. GetLastError = 0x%x\n", GetLastError()));
+        // IHU_DBG_LOGW(IHU_, IHU_LEVEL_ERROR, (L"OpenSCManagerW failed.
+        // GetLastError = 0x%x\n", GetLastError()));
         goto FuncEnd;
     }
 
-    bResult = serviceManager.OpenService(
-                                        DriverName,
-                                        SERVICE_ALL_ACCESS);
+    bResult = serviceManager.OpenService(DriverName, SERVICE_ALL_ACCESS);
 
     if (bResult == FALSE)
     {
-        //IHU_DBG_LOGW(IHU_, IHU_LEVEL_ERROR, (L"OpenService failed. GetLastError = 0x%x\n", GetLastError()));
+        // IHU_DBG_LOGW(IHU_, IHU_LEVEL_ERROR, (L"OpenService failed.
+        // GetLastError = 0x%x\n", GetLastError()));
         goto FuncEnd;
     }
 
@@ -161,7 +155,8 @@ IhuStartDriver(
 
     if (bResult == FALSE)
     {
-        //IHU_DBG_LOGW(IHU_, IHU_LEVEL_ERROR, (L"StartService failed. GetLastError = 0x%x\n", GetLastError()));
+        // IHU_DBG_LOGW(IHU_, IHU_LEVEL_ERROR, (L"StartService failed.
+        // GetLastError = 0x%x\n", GetLastError()));
         goto FuncEnd;
     }
 
@@ -173,10 +168,8 @@ FuncEnd:
 
 
 
-BOOL
-__cdecl
-IhuStopDriver(
-    IN LPCWSTR DriverName)
+BOOL __cdecl
+IhuStopDriver(IN LPCWSTR DriverName)
 {
     IHU_SERVICE_MANAGER serviceManager;
 
@@ -186,17 +179,17 @@ IhuStopDriver(
 
     if (bResult == FALSE)
     {
-        //IHU_DBG_LOGW(IHU_, IHU_LEVEL_ERROR, (L"OpenSCManagerW failed. GetLastError = 0x%x\n", GetLastError()));
+        // IHU_DBG_LOGW(IHU_, IHU_LEVEL_ERROR, (L"OpenSCManagerW failed.
+        // GetLastError = 0x%x\n", GetLastError()));
         goto FuncEnd;
     }
 
-    bResult = serviceManager.OpenService(
-                                        DriverName,
-                                        SERVICE_ALL_ACCESS);
+    bResult = serviceManager.OpenService(DriverName, SERVICE_ALL_ACCESS);
 
     if (bResult == FALSE)
     {
-        //IHU_DBG_LOGW(IHU_, IHU_LEVEL_ERROR, (L"OpenService failed. GetLastError = 0x%x\n", GetLastError()));
+        // IHU_DBG_LOGW(IHU_, IHU_LEVEL_ERROR, (L"OpenService failed.
+        // GetLastError = 0x%x\n", GetLastError()));
         goto FuncEnd;
     }
 
@@ -204,7 +197,8 @@ IhuStopDriver(
 
     if (bResult == FALSE)
     {
-        //IHU_DBG_LOGW(IHU_, IHU_LEVEL_ERROR, (L"StopService failed. GetLastError = 0x%x\n", GetLastError()));
+        // IHU_DBG_LOGW(IHU_, IHU_LEVEL_ERROR, (L"StopService failed.
+        // GetLastError = 0x%x\n", GetLastError()));
         goto FuncEnd;
     }
 
@@ -213,4 +207,3 @@ IhuStopDriver(
 FuncEnd:
     return bResult;
 }
-
