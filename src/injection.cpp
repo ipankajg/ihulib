@@ -406,7 +406,7 @@ IhuInjectDll(HANDLE hProcess, LPCWSTR inDllPath, PVOID inLoadContext,
         goto Exit;
     }
 
-    WriteProcessMemory(hProcess, pInjectionData, &injData, sizeof(injData),
+    WriteProcessMemory(hProcess, pInjectionData, injData, injDataSize,
                        &notUsed);
 
     ULONG codeSize = 0;
@@ -480,7 +480,7 @@ Arguments:
         goto Exit;
     }
 
-    WriteProcessMemory(hProcess, pInjectionData, &injData, sizeof(injData),
+    WriteProcessMemory(hProcess, pInjectionData, injData, injDataSize,
                        &notUsed);
 
     ULONG codeSize = 0;
@@ -552,7 +552,7 @@ ihiInjectedCode(LPVOID * inAddress)
     // in a tight loop, until a debugger is attached to the target process
     // and eax is set to 1 to exit the loop.
     //
-    // NOTE: Change eax to 1 and recompile to debug.
+    // NOTE: Change eax to 0 and recompile to debug.
     //
     _asm push eax;
     _asm mov eax, 1;
