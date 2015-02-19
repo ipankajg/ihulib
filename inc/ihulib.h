@@ -553,10 +553,10 @@ IhuLaunchNewProcess(
 bool
 WINAPI
 IhuInjectDll(
-    HANDLE  hProcess,
+    HANDLE hProcess,
     LPCWSTR inDllPath,
-    LPCSTR  inFnIncludes,
-    LPCSTR  inFnExcludes);
+    PVOID inLoadContext,
+    ULONG inLoadContextSize);
 
 /**
 * @brief   Unloads a DLL in a process.
