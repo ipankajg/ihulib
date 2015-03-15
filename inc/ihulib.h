@@ -99,6 +99,7 @@ extern DWORD _IhuDbgLogLevel;
 void IhuSetDbgLogLevel(DWORD DebugLogLevel);
 DWORD IhuGetDbgLogLevel();
 void __cdecl IhuDbgLog(LPCWSTR sFormat, ...);
+void IhuSetDbgLogFunction(PFN_IHU_DBG_LOG DbgLogFn);
 
 /**
 * @addtogroup  VersionHelpers Version related macros.

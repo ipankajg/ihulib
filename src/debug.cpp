@@ -58,6 +58,11 @@ IhuGetDbgLogLevel()
     return _IhuDbgLogLevel;
 }
 
+void IhuSetDbgLogFunction(PFN_IHU_DBG_LOG DbgLogFn)
+{
+    _IhuDbgLogFn = DbgLogFn;
+}
+
 /*++
 
 Routine Name:
