@@ -521,6 +521,7 @@ Exit:
 // our injection code which shouldn't be optimized without our knowledge
 //
 #pragma optimize("g", off)
+#pragma runtime_checks("", off)
 
 
 /*++
@@ -727,6 +728,7 @@ ihiUnloadCodeEnd(void)
     unused = false;
 }
 
-#pragma optimize( "g", on)
+#pragma optimize("g", on)
+#pragma runtime_checks("", restore)
 
 #endif // defined(_M_IX86)
